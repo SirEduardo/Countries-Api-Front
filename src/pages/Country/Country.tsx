@@ -11,7 +11,7 @@ const CountryById: React.FC = () => {
   const [allCountries, setAllCountries] = useState<Country[]>([])
 
   useEffect(() => {
-    fetch("/data.json")
+    fetch("/src/data.json")
       .then((response) => response.json())
       .then((data: Country[]) => {
         const selectedCountry = data.find((country) => country.name === id)
