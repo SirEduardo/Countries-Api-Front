@@ -1,5 +1,5 @@
 import { SearchIcon } from "lucide-react"
-import React, { useState } from "react"
+import React, { useEffect, useState } from "react"
 import { Country } from "../../types"
 import { useTheme } from "../Context/ThemeContext"
 
@@ -9,39 +9,48 @@ interface Props {
 }
 
 const Search: React.FC<Props> = ({ countries, setCountries }) => {
+  const [originalCountries, setOriginalCountries] = useState<Country[]>([])
   const [selectedRegion, setSelectedRegion] = useState("")
   const [searchTerm, setSearchTerm] = useState("")
   const { mode } = useTheme()
 
+  useEffect(() => {
+    if (originalCountries.length === 0) {
+      setOriginalCountries(countries)
+    }
+  }, [countries, originalCountries])
+
   const regions = Array.from(
-    new Set(countries.map((country) => country.region))
+    new Set(originalCountries.map((country) => country.region))
   )
+  const applyFilters = () => {
+    let filteredCountries = originalCountries
+
+    if (selectedRegion) {
+      filteredCountries = filteredCountries.filter(
+        (country) => country.region === selectedRegion
+      )
+    }
+
+    if (searchTerm) {
+      filteredCountries = filteredCountries.filter((country) =>
+        country.name.toLowerCase().includes(searchTerm)
+      )
+    }
+
+    setCountries(filteredCountries)
+  }
 
   const handleRegionChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const region = e.target.value
-    setSelectedRegion(region)
-
-    if (region) {
-      const filtered = countries.filter((country) => country.region === region)
-      setCountries(filtered)
-    } else {
-      setCountries(countries)
-    }
+    setSelectedRegion(e.target.value)
   }
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const term = e.target.value.toLowerCase()
-    setSearchTerm(term)
-
-    if (term) {
-      const filteredCountries = countries.filter((country) =>
-        country.name.toLowerCase().includes(term)
-      )
-      setCountries(filteredCountries)
-    } else {
-      setCountries(countries)
-    }
+    setSearchTerm(e.target.value.toLowerCase())
   }
+  useEffect(() => {
+    applyFilters()
+  }, [searchTerm, selectedRegion])
 
   return (
     <div className="flex justify-between px-20 pt-20">
