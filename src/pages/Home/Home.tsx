@@ -10,7 +10,7 @@ const Home: React.FC = () => {
   const { mode } = useTheme()
 
   useEffect(() => {
-    fetch("/data.json")
+    fetch("/src/data.json")
       .then((response) => response.json())
       .then((data) => {
         const countriesWithId = data.map((country: Country) => ({
