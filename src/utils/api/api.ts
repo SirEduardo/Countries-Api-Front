@@ -1,1 +1,1 @@
-export const API_URL = "http://localhost:3000/api/v1"
+export const API_URL = "https://countries-api-back.vercel.app/api/v1"
