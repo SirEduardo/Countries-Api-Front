@@ -10,8 +10,10 @@ const CountryById: React.FC = () => {
   const { mode } = useTheme()
   const [country, setCountry] = useState<Country | undefined>()
   const [allCountries, setAllCountries] = useState<Country[]>([])
+  const [loading, setLoading] = useState(false)
 
   useEffect(() => {
+    setLoading(true)
     fetch(`${API_URL}/countries/`)
       .then((response) => response.json())
       .then((data: Country[]) => {
@@ -19,7 +21,9 @@ const CountryById: React.FC = () => {
         setCountry(selectedCountry)
         setAllCountries(data)
       })
+
       .catch((error) => console.error("Error fetching country data: ", error))
+      .finally(() => setLoading(false))
   }, [id])
 
   const getBorderCountryNames = (borders: string[]) => {
@@ -53,7 +57,9 @@ const CountryById: React.FC = () => {
           <ArrowLeft className="mr-2 h-4 w-4" />
           Back
         </button>
-        {country ? (
+        {loading ? (
+          <p>Loading country details...</p>
+        ) : country ? (
           <div className="flex pt-20 justify-around items-center w-full gap-20">
             <img
               src={country.flag}
@@ -62,7 +68,7 @@ const CountryById: React.FC = () => {
             />
             <div className="flex flex-col">
               <h2 className="font-bold text-3xl">{country.name}</h2>
-              <div className="mt-10 ">
+              <div className="mt-10">
                 <div className="flex gap-32">
                   <div className="flex flex-col gap-4">
                     <p>
@@ -89,7 +95,7 @@ const CountryById: React.FC = () => {
                     </p>
                     <p>
                       <strong>Currencies:</strong>{" "}
-                      {country.currencies.map((c) => c.name).join(",")}
+                      {country.currencies.map((c) => c.name).join(", ")}
                     </p>
                     <p>
                       <strong>Languages:</strong>{" "}
@@ -121,7 +127,6 @@ const CountryById: React.FC = () => {
                               }}
                               className="bg-white px-4 py-2 rounded-md shadow-md"
                             >
-                              {" "}
                               {borderCountry}
                             </div>
                           </Link>
@@ -134,7 +139,7 @@ const CountryById: React.FC = () => {
             </div>
           </div>
         ) : (
-          <p>loading country details...</p>
+          <p>Country not found.</p>
         )}
       </div>
     </main>
