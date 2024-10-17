@@ -9,7 +9,9 @@ import { API_URL } from "../../utils/api/api"
 const Home: React.FC = () => {
   const [countries, setCountries] = useState<Country[]>([])
   const { mode } = useTheme()
+  const [loading, setLoading] = useState(false)
   useEffect(() => {
+    setLoading(true)
     fetch(`${API_URL}/countries`)
       .then((response) => response.json())
       .then((data) => {
@@ -20,6 +22,7 @@ const Home: React.FC = () => {
         setCountries(countriesWithId)
       })
       .catch((error) => console.error("Error al cargar los datos:", error))
+      .finally(() => setLoading(false))
   }, [])
 
   return (
@@ -34,6 +37,7 @@ const Home: React.FC = () => {
     >
       <Search countries={countries} setCountries={setCountries} />
       <section className="flex justify-center flex-wrap gap-20 p-20">
+        {loading ? "Loading countries..." : ""}
         {countries.map((country) => (
           <Link to={`/country/${country.name}`} key={country.id}>
             <div
