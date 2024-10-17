@@ -3,6 +3,7 @@ import { useTheme } from "../../components/Context/ThemeContext"
 import React, { useEffect, useState } from "react"
 import { Country } from "../../types"
 import { ArrowLeft } from "lucide-react"
+import { API_URL } from "../../utils/api/api"
 
 const CountryById: React.FC = () => {
   const { id } = useParams()
@@ -11,7 +12,7 @@ const CountryById: React.FC = () => {
   const [allCountries, setAllCountries] = useState<Country[]>([])
 
   useEffect(() => {
-    fetch("/src/data.json")
+    fetch(`${API_URL}/countries/`)
       .then((response) => response.json())
       .then((data: Country[]) => {
         const selectedCountry = data.find((country) => country.name === id)
