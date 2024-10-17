@@ -4,13 +4,13 @@ import { Country } from "../../types"
 import { Link } from "react-router-dom"
 import Search from "../../components/Search/Search"
 import { useTheme } from "../../components/Context/ThemeContext"
+import { API_URL } from "../../utils/api/api"
 
 const Home: React.FC = () => {
   const [countries, setCountries] = useState<Country[]>([])
   const { mode } = useTheme()
-
   useEffect(() => {
-    fetch("/src/data.json")
+    fetch(`${API_URL}/countries`)
       .then((response) => response.json())
       .then((data) => {
         const countriesWithId = data.map((country: Country) => ({
